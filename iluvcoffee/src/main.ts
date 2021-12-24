@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ApiKeyGuard } from './common/guards/api-key.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -8,9 +9,13 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       transform: true,
-      forbidNonWhitelisted: true
+      forbidNonWhitelisted: true,
+      transformOptions: {
+        enableImplicitConversion: true
+      }
     })
   )
+  app.useGlobalGuards(new ApiKeyGuard())
   await app.listen(3000);
 }
 bootstrap();
